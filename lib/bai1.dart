@@ -1,43 +1,30 @@
 import 'dart:io';
 
 void main() {
-  stdout.write('Nhập số que kem cần mua (> 0): ');
-  int? soLuong = int.tryParse(stdin.readLineSync() ?? '');
+  // Nhập số que kem
+  int soQueKem;
+  do {
+    stdout.write("Nhập số kem bạn cần mua: ");
+    soQueKem = int.parse(stdin.readLineSync()!);
+  } while (soQueKem <= 0);
 
-  if (soLuong == null || soLuong <= 0) {
-    print('Số lượng không hợp lệ! Vui lòng nhập số nguyên > 0.');
-    return;
-  }
+  // Nhập số tiền cho mỗi que kem
+  double soTien;
+  do {
+    stdout.write("Nhập số tiền cho mỗi que kem: ");
+    soTien = double.tryParse(stdin.readLineSync()!) ?? 1.0;
+  } while (soTien <= 0);
 
-  stdout.write('Nhập giá tiền 1 que kem: ');
-  double? giaTien = double.tryParse(stdin.readLineSync() ?? '');
-
-  if (giaTien == null || giaTien <= 0) {
-    print('Giá tiền không hợp lệ! Vui lòng nhập số > 0.');
-    return;
-  }
-
-  // 3. Tính toán theo mức giảm giá
-  double tongTienChuaGiam = soLuong * giaTien;
-  double phanTramGiam = 0.0;
-
-  if (soLuong > 10) {
-    phanTramGiam = 0.10;
-  } else if (soLuong >= 5) {
-    phanTramGiam = 0.05;
+  // Tổng tiền
+  double tongTien;
+  if (soQueKem > 10) {
+    tongTien = soTien * soQueKem * 0.9;
+  } else if (soQueKem >= 5) {
+    tongTien = soTien * soQueKem * 0.95;
   } else {
-    phanTramGiam = 0.0;
+    tongTien = soTien * soQueKem;
   }
 
-  double tienGiam = tongTienChuaGiam * phanTramGiam;
-  double thanhTien = tongTienChuaGiam - tienGiam;
-
-  print('\n--- KẾT QUẢ TÍNH TIỀN ---');
-  print('Số lượng que kem: $soLuong');
-  print('Đơn giá: ${giaTien.toStringAsFixed(0)} VNĐ');
-  print('Tổng tiền ban đầu: ${tongTienChuaGiam.toStringAsFixed(0)} VNĐ');
-  print(
-    'Mức giảm giá: ${(phanTramGiam * 100).toInt()}% (-${tienGiam.toStringAsFixed(0)} VNĐ)',
-  );
-  print('Số tiền thực tế phải trả: ${thanhTien.toStringAsFixed(0)} VNĐ');
+  // Xuất nội dung
+  print("Tổng tiền cho $soQueKem là: $tongTien");
 }
