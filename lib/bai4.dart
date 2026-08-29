@@ -1,65 +1,93 @@
 import 'dart:io';
 import 'dart:math';
 
-void main() {
-  stdout.write('Nhập số lượng phần tử cần tạo ngẫu nhiên (> 0): ');
-  int? n = int.tryParse(stdin.readLineSync() ?? '');
-
-  if (n == null || n <= 0) {
-    print('Số lượng không hợp lệ.');
-    return;
-  }
-
-  Random random = Random();
-  List<int> list = List.generate(n, (_) => 5 + random.nextInt(96));
-
-  print('\na. Danh sách phần tử: $list');
-
-  List<int> oddNumbers = list.where((item) => item % 2 != 0).toList();
-  if (oddNumbers.isEmpty) {
-    print('b. Danh sách không có số lẻ.');
-  } else {
-    double avgOdd = oddNumbers.reduce((a, b) => a + b) / oddNumbers.length;
-    print('b. Trung bình cộng các số lẻ: ${avgOdd.toStringAsFixed(2)}');
-  }
-
-  bool isSymmetric = true;
+// Kiểm tra đối xứng
+bool isDoiXung(List<int> list) {
   for (int i = 0; i < list.length ~/ 2; i++) {
     if (list[i] != list[list.length - 1 - i]) {
-      isSymmetric = false;
-      break;
+      return false;
     }
   }
-  print('c. Danh sách đối xứng: ${isSymmetric ? "CÓ" : "KHÔNG"}');
+  return true;
+}
 
-  bool isSortedAsc = true;
+// Kiểm tra tăng dần
+bool isBySort(List<int> list) {
   for (int i = 0; i < list.length - 1; i++) {
     if (list[i] > list[i + 1]) {
-      isSortedAsc = false;
-      break;
+      return false;
     }
   }
-  print('d. Danh sách được sắp xếp tăng dần: ${isSortedAsc ? "CÓ" : "KHÔNG"}');
+  return true;
+}
 
-  int maxVal = list.reduce(max);
-  print('e. Phần tử lớn nhất: $maxVal');
+void main() {
+  // Khai báo danh sách các số nguyên
+  List<int> list = [];
 
-  List<int> evenNumbers = list.where((item) => item % 2 == 0).toList();
-  if (evenNumbers.isEmpty) {
-    print('f. Danh sách không có số chẵn.');
-  } else {
-    int maxEven = evenNumbers.reduce(max);
-    print('f. Số chẵn lớn nhất: $maxEven');
+  // Khai báo số phần tử trong danh sách
+  int member;
+  do {
+    stdout.write("Nhập số lượng phần tử cần khởi tạo: ");
+    member = int.tryParse(stdin.readLineSync()!) ?? 1;
+  } while (member <= 0);
+
+  // Nhập giá trị cho phần tử
+  Random random = Random();
+  for (int i = 0; i < member; i++) {
+    // random.nextInt(max - min + 1) + min
+    list.add(random.nextInt(100 - 5 + 1) + 5);
   }
 
-  stdout.write('\nNhập giá trị cần tìm và xóa: ');
-  int target = int.tryParse(stdin.readLineSync() ?? '') ?? 0;
+  // Xuất danh sách
+  print("\nDanh sách phần tử được random là: $list");
 
-  if (!list.contains(target)) {
-    print('Không tìm thấy.');
+  // Tổng các phần tử trong danh sách
+  int tong = list.fold(0, (tong, x) => tong + x);
+  print("Tổng các phần tử trong danh sách: $tong");
+
+  // Trung bình cộng các số lẻ
+  List<int> listSoLe = list.where((x) => x % 2 != 0).toList();
+  if (listSoLe.isNotEmpty) {
+    int tongSoLe = listSoLe.fold(0, (sum, x) => sum + x);
+    double avgSoLe = tongSoLe / listSoLe.length;
+    print("Trung bình cộng các số lẽ là: ${avgSoLe.toStringAsFixed(2)}");
   } else {
-    list.removeWhere((item) => item == target);
-    print('Đã xóa tất cả phần tử có giá trị $target.');
-    print('Danh sách sau khi xóa: $list');
+    print("Không có số lẽ trong danh sách");
+  }
+
+  // Kiểm tra đối xứng
+  if (isDoiXung(list)) {
+    print("Danh sách đối xứng");
+  } else {
+    print("Danh sách không đối xứng");
+  }
+
+  // Kiểm tra tăng dần
+  if (isBySort(list)) {
+    print("Danh sách tăng dần");
+  } else {
+    print("Danh sách không tăng dần");
+  }
+
+  // Phần tử lớn nhất trong danh sách
+  print("Phần tử lớn nhất trong danh sách là: ${list.reduce(max)}");
+
+  // Phần tử chẵn lớn nhất trong danh sách
+  List<int> listChan = list.where((x) => x % 2 == 0).toList();
+  if (listChan.isNotEmpty) {
+    print("Số chẵn lớn nhất trong danh sách là: ${listChan.reduce(max)}");
+  } else {
+    print("Danh sách không có số chẵn");
+  }
+
+  // Nhập 1 giá trị bất kì để so sánh và xóa khỏi danh sách
+  stdout.write("Nhập một giá trị bất kì: ");
+  int value = int.tryParse(stdin.readLineSync()!) ?? 1;
+  if (list.any((x) => x == value)) {
+    list.remove(value);
+    print("Danh sách sao khi xóa phần tử $value: $list");
+  } else {
+    print("Không tìm thấy phần tử trong danh sách");
   }
 }
