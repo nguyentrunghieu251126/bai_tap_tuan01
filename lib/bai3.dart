@@ -1,48 +1,56 @@
 import 'dart:io';
+import 'dart:math';
 
-bool isPrime(int n) {
-  if (n < 2) return false;
-  for (int i = 2; i * i <= n; i++) {
-    if (n % i == 0) return false;
+// Kiểm tra số nguyên tố
+bool soNguyenTo(int value) {
+  if (value < 2) {
+    return false;
+  }
+  for (int i = 2; i <= sqrt(value); i++) {
+    if (value % i == 0) {
+      return false;
+    }
   }
   return true;
 }
 
 void main() {
-  stdout.write('Nhập số lượng phần tử của danh sách: ');
-  int? n = int.tryParse(stdin.readLineSync() ?? '');
-
-  if (n == null || n <= 0) {
-    print('Số lượng không hợp lệ.');
-    return;
-  }
-
+  // Khai báo danh sách các số nguyên
   List<int> list = [];
-  for (int i = 0; i < n; i++) {
-    stdout.write('Nhập phần tử thứ ${i + 1}: ');
-    int val = int.tryParse(stdin.readLineSync() ?? '') ?? 0;
-    list.add(val);
+
+  // Khai báo số phần tử trong danh sách
+  int member;
+  do {
+    stdout.write("Nhập số lượng phần tử cần khởi tạo: ");
+    member = int.tryParse(stdin.readLineSync()!) ?? 1;
+  } while (member <= 0);
+
+  // Nhập giá trị cho phần tử
+  for (int i = 0; i < member; i++) {
+    stdout.write("Nhập phần tử thứ $i: ");
+    list.add(int.tryParse(stdin.readLineSync()!) ?? 404);
   }
 
-  print('\na. Danh sách vừa nhập: $list');
+  // Xuất danh sách
+  print("\nDanh sách phần tử: $list");
 
-  int tong = list.fold(0, (sum, item) => sum + item);
-  print('b. Tổng các phần tử: $tong');
+  // Tổng các phần tử trong danh sách
+  // list.fold(giáTrịKhởiTạo, (biếnTíchLũy, phầnTửHiệnTại) => biểuThứcKếtHợp)
+  int tong = list.fold(0, (sum, x) => sum + x);
+  print("Tổng các phần tử trong danh sách: $tong");
 
-  List<int> primeList = list.where((item) => isPrime(item)).toList();
-  print('c. Các số nguyên tố trong danh sách: $primeList');
+  // Xuất các phần tử là số nguyên tố
+  List<int> listSNt = list.where(soNguyenTo).toList();
+  print("Danh sách các số là số nguyên tố: $listSNt");
 
-  stdout.write('\nNhập một giá trị cần tìm: ');
-  int x = int.tryParse(stdin.readLineSync() ?? '') ?? 0;
+  // Nhập 1 giá trị bất kì để thêm vào danh sách
+  stdout.write("Nhập một giá trị bất kì: ");
+  int value = int.tryParse(stdin.readLineSync()!) ?? 1;
 
-  int index = list.indexOf(x);
-  if (index != -1) {
-    print(
-      'Giá trị $x có trong danh sách tại vị trí index: $index (vị trí thứ ${index + 1})',
-    );
+  if (list.any((x) => x == value)) {
+    print("Giá trị $value đã có trong danh sách");
   } else {
-    list.insert(0, x);
-    print('Giá trị $x không có trong danh sách. Đã thêm $x vào đầu danh sách.');
-    print('Danh sách sau khi thêm: $list');
+    list.add(value);
+    print("Đã thêm $value vào danh sách");
   }
 }
